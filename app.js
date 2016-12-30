@@ -1,17 +1,25 @@
-var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-var io = require('socket.io')(http);
-var port = process.env.PORT || 3000;
+var restify = require('restify');
+var builder = require('botbuilder');
 
-app.use(express.static(__dirname + '/public'));
+// Setup Restify Server
+var server = restify.createServer();
+server.listen(process.env.port || process.env.PORT || 3978, function () {
+    console.log('%s listening to %s', server.name, server.url);
+    });
 
-io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-  });
+//Create chat bot 
+
+var connector = new builder.ChatConnector({ // This lets us connect our bot to the bot framework portal for deployment 
+    appId: 'd9f4ea21-40cd-4986-8ba4-42f770697d88',
+    appPassword: 'MWJ4td0QWcmGLoUmOhqSqep'
+});
+var bot = new builder.UniversalBot(connector);
+server.post('/api/messages', connector.listen());
+
+//Bot Dialogs
+
+// Bot builder breaks fown conversations into components called dialogs. 
+bot.dialog('/', function (session) { //Bot builder tracks which dialog is currently active and will automatically route the incomeing message to the active dialog
+    session.send("Hello World"); // This is a single root '/' dialog that responds to any message with "Hello World"
 });
 
-http.listen(port, function(){
-  console.log('listening on ' + port);
-});
