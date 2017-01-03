@@ -1,7 +1,12 @@
 var restify = require('restify');
 var builder = require('botbuilder');
-var myGreetings = ['Sup Dude', 'Hey Man', 'I can say more than Hello World now', 'Ayyyyy ma boi!!!', 'Hi', 'YO!', 'SUUUUUUHHHH'];
-var rand = myGreetings[Math.floor(Math.random() * myGreetings.length)];
+
+// selecting a random array item
+var selectGreeting = ["Hey Dude", "Hola Amigo", "Salut!", "SUUUUUH"];
+var pickAGreeting = function () {
+    var thisGreeting = selectGreeting[Math.floor(Math.random() * 4)];
+    return thisGreeting;
+};
 
 // Setup Restify Server
 var server = restify.createServer();
@@ -22,6 +27,6 @@ server.post('/api/messages', connector.listen());
 
 // Bot builder breaks fown conversations into components called dialogs. 
 bot.dialog('/', function (session) { //Bot builder tracks which dialog is currently active and will automatically route the incomeing message to the active dialog
-    session.send(rand); // This is a single root '/' dialog that responds to any message with "Hello World"
+    session.send(pickAGreeting()); // This is a single root '/' dialog that responds to any message with "Hello World"
 });
 
